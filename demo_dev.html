@@ -1,0 +1,249 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Kitting Cart</title>
+		
+	<link href="css/style.css" rel="stylesheet" type="text/css">
+	<link href="css/jquery-ui.css" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="js/vendor/raphael-min.js"></script>
+	<script type="text/javascript" src="js/kuma-gauge.jquery.js"></script>
+	<script src='/socket.io/socket.io.js'></script>
+	<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+
+	<script>
+	
+	$( document ).ready(function() {
+		$('.js-gauge--1').kumaGauge({
+			title : {
+				display : true, 
+				value : 'First shelf', 
+				fontFamily : 'Helvetica',
+				fontColor : '#1E4147',
+				fontSize : '11',
+				fontWeight : 'bold'
+			},
+			label : {
+				display : true,
+				left : 'Empty',
+				right : 'Full',
+				fontFamily : 'Helvetica',
+				fontColor : '#1E4147',
+				fontSize : '11',
+				fontWeight : 'bold'
+			},
+			gaugeWidth : 15,
+			radius : 40,
+			min:0,
+			max : 20,
+			fill : '0-#fa4133:10-#fdbe37:25-#1cb42f:100',
+			//fill : '#0AB2F1',
+			value : 19,
+		});
+		$('.js-gauge--2').kumaGauge({
+			title : {
+				display : true, 
+				value : 'Second shelf',
+				fontFamily : 'Helvetica',
+				fontColor : '#1E4147',
+				fontSize : '11',
+				fontWeight : 'bold'
+			},
+			label : {
+				display : true,
+				left : 'Empty',
+				right : 'Full',
+				fontFamily : 'Helvetica',
+				fontColor : '#1E4147',
+				fontSize : '11',
+				fontWeight : 'bold'
+			},
+			gaugeWidth : 15,
+			radius : 40,
+			min:0,
+			max : 20, 
+			fill : '0-#fa4133:10-#fdbe37:25-#1cb42f:100',
+			//fill : '#0AB2F1',
+			value : 0
+		});
+
+		$('.js-gauge--3').kumaGauge({
+			title : {
+				display : true, 
+				value : 'Third shelf',
+				fontFamily : 'Helvetica',
+				fontColor : '#1E4147',
+				fontSize : '11',
+				fontWeight : 'bold'
+			},
+			label : {
+				display : true,
+				left : 'Empty',
+				right : 'Full',
+				fontFamily : 'Helvetica',
+				fontColor : '#1E4147',
+				fontSize : '11',
+				fontWeight : 'bold'
+			},
+			gaugeWidth : 15,
+			radius : 40,
+			min:0,
+			max : 20, 
+			fill : '0-#fa4133:10-#fdbe37:25-#1cb42f:100',
+			//fill : '#0AB2F1',
+			value : 0
+		});
+
+		$('.js-gauge--4').kumaGauge({
+			title : {
+				display : true, 
+				value : 'Fourth shelf',
+				fontFamily : 'Helvetica',
+				fontColor : '#1E4147',
+				fontSize : '11',
+				fontWeight : 'bold'
+			},
+			label : {
+				display : true,
+				left : 'Empty',
+				right : 'Full',
+				fontFamily : 'Helvetica',
+				fontColor : '#1E4147',
+				fontSize : '11',
+				fontWeight : 'bold'
+			},
+			gaugeWidth : 15,
+			radius : 40,
+			min:0,
+			max : 20,
+			fill : '0-#fa4133:10-#fdbe37:25-#1cb42f:100',
+			//fill : '#0AB2F1',
+			value : 0
+		});
+		/*
+		$("#popupArchitecture").dialog({
+			dialogClass: "popup-architecture",
+				autoOpen: false,
+			  resizable: false,
+			  height:400,
+			  width:800,
+		});
+		$('#iconArchitecture').on('click', function () {
+			$("#popupArchitecture").dialog( "open" );   
+		});*/
+	
+	$(".bookmark").click(function () {
+    // Set the effect type
+    var effect = 'slide';
+    // Set the options for the effect type chosen
+    var options = { direction:'left' };
+	var options2 = { direction:'right' };
+    // Set the duration (default: 400 milliseconds)
+    var duration = 500;
+	if($('#monitor').is(":visible")){
+		$('#monitor').toggle(effect, options2, duration);
+		$("#bookmarkArchitecture").hide();
+		$("#bookmarkDemo").show();
+		$('#popupArchitecture').delay(500).toggle(effect, options, duration);
+	}else{
+		$('#popupArchitecture').toggle(effect, options, duration);
+		$("#bookmarkArchitecture").show();
+		$("#bookmarkDemo").hide();
+		$('#monitor').delay(500).toggle(effect, options2, duration);
+	}
+});
+	
+	
+		var socket = io.connect('http://localhost:3700');
+			socket.on('message', function (data) {
+			for(var i=0; i<= data.value.length; i++){
+				$('#shelf-'+(i+1)).removeClass("tubi2 tubi4");
+				if(data.value[i]<1){
+				}else if(data.value[i]<3){
+					$('#shelf-'+(i+1)).addClass("tubi2");
+				}else{
+					$('#shelf-'+(i+1)).addClass("tubi4");
+				}
+				$('.js-gauge--'+(i+1)).kumaGauge('update', {
+					value :data.value[i]
+				});
+			}
+		});
+		
+	});
+	
+	</script>
+</head>
+
+<body>
+	<div class="head">
+		<div class="w20 fleft">
+			<img src="img/logoJhonDeere.png" class="logo">
+		<div  id="bookmarkArchitecture" class="bookmark nobordleft">
+						<span>Click here to see the architecture	</span> 
+					</div>
+		</div>
+		<div class="w60 fleft ">
+			<div>
+				<p class="title">Smart Rack</p> 
+			</div>
+		
+		</div>
+		<div class="fright">
+			<img src="img/logoFincons.jpg" class="logo" id="logo_fincons"  style="float:right;"/>
+			<br/>
+			<div id="bookmarkDemo" class="bookmark nobordright" style="display:none;">
+				<span  >Click here to see the demo	</span> 
+			</div>
+				
+		</div>
+		<div class="clear"></div>
+	</div>
+	<div  style="text-align:center;">
+		<div>
+			<div id="popupArchitecture" title="Demo Architecture">
+					<img src="img/Architecture.PNG">
+			</div>
+			<div style="width:100%" id="monitor">
+				<div style="display: inline-block;" >
+					<div style="float:left;">
+						<div class="js-gauge js-gauge--1 gauge"></div>
+						<div class="js-gauge js-gauge--3 gauge mt90"></div>
+					</div>
+					<div class="smartKittingCart">
+						<div id="shelf-1" class="shelf" style="margin-top:60px;"></div>
+						<div id="shelf-2" class="shelf"></div>
+						<div id="shelf-3" class="shelf"></div>
+						<div id="shelf-4" class="shelf"></div>
+					</div>
+					<div style="float:left;">
+						<div class="js-gauge js-gauge--2 gauge mt110"></div>
+						<div class="js-gauge js-gauge--4 gauge mt90"></div>
+					</div>
+				</div>
+				</div>
+		</div>
+	
+	</div>
+	<div class="clear">
+	<div id="footer">
+		<div class="w20 fleft">
+			<img src="img/logoBEinCPPS.png" class="logo" >
+			
+		</div>
+			<div class="w60 fleft">
+		
+		</div>
+			<div class="w20 fright">
+			<img class="logo_ue" src="img/logoCee.png" alt="">
+			<p>This project has received funding from FoF-05-2014: Innovative
+				Product-Service design using manufacturing intelligence under grant
+				agreement no 680633.</p>
+		</div>
+	</div><!--
+	<div id="popupArchitecture" title="Demo Architecture">
+		
+		<img src="img/Architecture.PNG">
+	</div> -->
+	</body>
+</html>
